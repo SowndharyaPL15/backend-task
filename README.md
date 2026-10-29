@@ -46,6 +46,13 @@ backend-task/
 │   ├── .gitignore
 │   ├── package.json
 │   └── server.js
+├── products-api-mongodb/
+│   ├── models/
+│   │   └── Product.js
+│   ├── .env
+│   ├── .gitignore
+│   ├── package.json
+│   └── server.js
 ├── users-orders-mysql/
 │   ├── controllers/
 │   │   ├── orderController.js
@@ -195,3 +202,73 @@ The server will connect to MySQL and run at `http://localhost:3000`.
 - **Foreign Key Validation**: Attempting to create an order with a non-existent `user_id` returns `400 Bad Request` (`The specified user does not exist`).
 - **Unique Constraint Validation**: Attempting to create or update a user with an email already taken returns `409 Conflict` (`Email already exists`).
 - **SQL Injection Prevention**: Parameterized prepared statements (`?` placeholders) are used for all dynamic SQL queries.
+
+---
+
+## Task: Products API with MongoDB
+
+A RESTful API using Express.js and MongoDB (via Mongoose) implementing full CRUD operations on product documents with schema validation and error handling.
+
+### Directory
+Located in [`products-api-mongodb/`](file:///c:/Users/dhana/OneDrive/Desktop/backend-task/products-api-mongodb).
+
+### Folder Structure
+```
+backend-task/products-api-mongodb/
+├── models/
+│   └── Product.js
+├── .env
+├── .env.example
+├── .gitignore
+├── package.json
+└── server.js
+```
+
+### Database Configuration
+You can configure either a local MongoDB instance or MongoDB Atlas in `.env`:
+
+**Local MongoDB**:
+```env
+PORT=3000
+MONGO_URI=mongodb://127.0.0.1:27017/productsdb
+```
+
+**MongoDB Atlas**:
+```env
+PORT=3000
+MONGO_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/productsdb
+```
+
+### How to Run
+```bash
+cd products-api-mongodb
+npm install
+npm start
+```
+Or for auto-reloading development:
+```bash
+npm run dev
+# or: npx nodemon server.js
+```
+The server will connect to MongoDB and output:
+```
+MongoDB connected successfully
+Server running on port 3000
+```
+
+### Schema Definition (`Product`)
+- `name`: `String` (required, trimmed)
+- `price`: `Number` (required, min: 0)
+- `category`: `String` (required, trimmed)
+- `stock`: `Number` (default: 0, min: 0)
+- `timestamps`: `true` (`createdAt`, `updatedAt`)
+
+### API Endpoints
+
+| Method | Endpoint | Description | Request Body | Status Codes |
+|---|---|---|---|---|
+| `GET` | `/api/products` | Retrieve all products | None | `200 OK`, `500 Internal Server Error` |
+| `GET` | `/api/products/:id` | Retrieve product by ID | None | `200 OK`, `400 Bad Request`, `404 Not Found`, `500 Internal Server Error` |
+| `POST` | `/api/products` | Create a new product | `{"name":"Wireless Mouse","price":799,"category":"Electronics","stock":25}` | `201 Created`, `400 Bad Request` |
+| `PUT` | `/api/products/:id` | Update product by ID | `{"name":"Wireless Mouse Pro","price":999,"category":"Electronics","stock":20}` | `200 OK`, `400 Bad Request`, `404 Not Found` |
+| `DELETE` | `/api/products/:id` | Delete product by ID | None | `200 OK`, `400 Bad Request`, `404 Not Found`, `500 Internal Server Error` |
